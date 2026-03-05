@@ -2,15 +2,15 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pagina de Fer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pagina de Fer</title>0
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"> <!-- Este URL es para importar dos fuentes de google fonts(Space Momo y Syne) -->
 <style>
   :root {
     --bg: #080c10;  /* fondo */
     --bg2: #0d1117;  /* fondo */
-    --surface: #111827;  /* color de superficie de las tarjetas */
-    --border: #1e2d3d;  /* color de bordes */
+    --surface: #111827; /* color de superficie de las tarjetas */
+    --border: #1e2d3d; /* color de bordes */
     --accent: #00ffc8; /* enfasis o resalte principal */
     --accent2: #0099ff; /* enfasis o resalte secundario */
     --text: #e2e8f0; /* el texto normal */
@@ -20,7 +20,6 @@
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -28,10 +27,18 @@
     color: var(--text);
     font-family: var(--sans);
     overflow-x: hidden;
-    cursor: none;
   }
 
-  /* cursor animado */
+  /* Solo mostrar cursor custom en desktop */
+  @media (pointer: fine) {
+    body { cursor: none; }
+    .cursor, .cursor-ring { display: block; }
+  }
+  @media (pointer: coarse) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none !important; }
+  }
+   /* cursor animado */
   .cursor {
     width: 12px; height: 12px;
     background: var(--accent);
@@ -40,8 +47,9 @@
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    transition: width 0.2s, height 0.2s, background 0.2s;
     mix-blend-mode: difference;
+    will-change: left, top;
   }
   .cursor-ring {
     width: 36px; height: 36px;
@@ -52,42 +60,54 @@
     z-index: 9998;
     transform: translate(-50%, -50%);
     transition: all 0.15s ease;
+    will-change: left, top;
   }
 
-  /* capa de ruido */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); /* es un filtro de SVG que genera ruido matematico aleatorio sin descargar imagenes  */
-    opacity: 0.03;
-    pointer-events: none;
-    z-index: 1000;
+  /* Ruido - solo desktop para no ralentizar móvil */
+  @media (pointer: fine) {
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); /* es un filtro de SVG que genera ruido matematico aleatorio sin descargar imagenes  */
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
   }
 
   /* Barra de navegacion */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 500;
     padding: 1.5rem 4rem;
     display: flex; justify-content: space-between; align-items: center;
     border-bottom: 1px solid transparent;
     transition: all 0.3s;
-    backdrop-filter: blur(0px);
   }
   nav.scrolled {
     border-bottom-color: var(--border);
-    backdrop-filter: blur(20px);
-    background: rgba(8,12,16,0.8);
+    background: rgba(8,12,16,0.92);
+    /* backdrop-filter solo en desktop para no frenar móvil */
   }
+  @media (pointer: fine) {
+    nav.scrolled { backdrop-filter: blur(20px); }
+  }
+
   .nav-logo {
     font-family: var(--mono);
     font-size: 1rem;
     color: var(--accent);
     letter-spacing: 2px;
+    z-index: 501;
+    position: relative;
   }
   .nav-logo span { color: var(--muted); }
-  .nav-links { display: flex; gap: 2.5rem; }
+
+  /* Links en desktop */
+  .nav-links {
+    display: flex; gap: 2.5rem;
+  }
   .nav-links a {
     font-family: var(--mono);
     font-size: 0.75rem;
@@ -108,7 +128,71 @@
   .nav-links a:hover { color: var(--accent); }
   .nav-links a:hover::after { width: 100%; }
 
-  /* INICIO */
+  /* ── HAMBURGER BUTTON ── */  /* ── Optimizador de los tres botones para celulares ── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 501;
+    position: relative;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--accent);
+    transition: transform 0.3s, opacity 0.3s;
+    transform-origin: center;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── MOBILE MENU ── */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8,12,16,0.97);
+    z-index: 499;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .mobile-menu.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .mobile-menu a {
+    font-family: var(--mono);
+    font-size: 1.3rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover,
+  .mobile-menu a:active { color: var(--accent); }
+
+  /* Móvil: nav siempre visible, links más pequeños */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.2rem; }
+    .nav-links { gap: 1rem; }
+    .nav-links a { font-size: 0.6rem; letter-spacing: 1px; }
+    .hamburger { display: none; }
+    .mobile-menu { display: none !important; }
+  }
+
+  /* ── INICIO ── */
   #inicio {
     min-height: 100vh;
     display: flex; flex-direction: column; justify-content: center;
@@ -124,6 +208,8 @@
       linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+    /* Mejor rendimiento con transform en lugar de animación */
+    will-change: auto;
   }
 
   .inicio-glow {
@@ -188,9 +274,10 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     text-decoration: none;
-    border: none; cursor: none;
+    border: none;
     clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
     transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
   }
   .btn-primary:hover {
     transform: translateY(-2px);
@@ -232,7 +319,6 @@
     margin-top: 0.25rem;
   }
 
-  /* SCROLL INDICATOR */
   .scroll-hint {
     position: absolute; bottom: 2rem; left: 4rem;
     font-family: var(--mono);
@@ -250,7 +336,7 @@
     animation: scrollPulse 2s infinite;
   }
 
-  /* SECTIONS */
+  /* ── SECTIONS ── */
   section { padding: 8rem 4rem; }
 
   .section-label {
@@ -276,7 +362,7 @@
     margin-bottom: 4rem;
   }
 
-  /* ABOUT */
+  /* ── ABOUT ── */
   #about {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -297,6 +383,7 @@
     position: relative;
     overflow: hidden;
   }
+  .about-img-placeholder img { width: 100%; height: 100%; object-fit: cover; }
   .about-img-placeholder::after {
     content: '';
     position: absolute; inset: 0;
@@ -346,11 +433,11 @@
     border-color: var(--accent);
   }
 
-  /* PROYECTOS */
+  /* ── PROYECTOS ── */
   #projects { background: var(--bg2); }
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5px;
     border: 1px solid var(--border);
   }
@@ -360,7 +447,7 @@
     position: relative;
     overflow: hidden;
     transition: background 0.3s;
-    cursor: none;
+    cursor: default;
   }
   .project-card::before {
     content: '';
@@ -419,14 +506,11 @@
     transition: opacity 0.2s;
   }
   .project-link:hover { opacity: 0.7; }
-  .project-link.dim {
-    color: var(--muted);
-  }
+  .project-link.dim { color: var(--muted); }
 
-  /* HABILIDADES */
+  /* ── HABILIDADES ── */
   #skills { background: var(--bg); }
 
-  /* ── Skill Pills ── */
   .skills-flat-grid {
     display: flex;
     flex-wrap: wrap;
@@ -447,13 +531,10 @@
     letter-spacing: 1px;
     transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
   }
-
   .skill-pill img {
-    width: 18px;
-    height: 18px;
+    width: 18px; height: 18px;
     object-fit: contain;
   }
-
   .skill-pill:hover {
     background: rgba(0,255,200,0.07);
     border-color: var(--accent);
@@ -461,7 +542,7 @@
     transform: translateY(-2px);
   }
 
-  /* CONTACT */
+  /* ── CONTACT ── */
   #contact {
     text-align: center;
     position: relative;
@@ -504,38 +585,27 @@
   }
   .social-link:hover { color: var(--accent); }
 
-  /* ANIMACION */
-  @keyframes fadeUp {  /* Animacion de entrada desde abajo */
+  /* ── ANIMACIONES ── */
+  @keyframes fadeUp {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  @keyframes scrollPulse { /* Animacion de pulso */
+  @keyframes scrollPulse {
     0%, 100% { opacity: 0.3; }
     50% { opacity: 1; }
   }
-  @keyframes blink { /* Parpadeo simple */
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
 
-  .reveal { /* Sistema de animación al hacer scroll(js decteta si el elemento es visible en la pantalla que esta mirando el usuario). */
+  .reveal {
     opacity: 0;
     transform: translateY(40px);
     transition: opacity 0.8s, transform 0.8s;
   }
-  .reveal.visible { /* Sistema de animación al hacer scroll(js decteta si el elemento es visible en la pantalla que esta mirando el usuario). */
+  .reveal.visible {
     opacity: 1;
     transform: none;
   }
 
-  @media (max-width: 768px) { /*Esta @media es para celulares y tablets pequeñas*/
-    nav { padding: 1.5rem 2rem; }
-    .nav-links { display: none; }
-    #inicio, section { padding-left: 2rem; padding-right: 2rem; }
-    #about { grid-template-columns: 1fr; }
-    .hero-stats { display: none; }
-    h1 { letter-spacing: -1px; }
-  }
+  /* Sin cambios de layout en móvil - mismo diseño en todos los dispositivos */
 </style>
 </head>
 <body>
@@ -543,15 +613,29 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#inicio" onclick="closeMobileMenu()">Inicio</a>
+  <a href="#about" onclick="closeMobileMenu()">Sobre mí</a>
+  <a href="#projects" onclick="closeMobileMenu()">Proyectos</a>
+  <a href="#skills" onclick="closeMobileMenu()">Habilidades</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contacto</a>
+</div>
+
 <nav id="navbar">
   <div class="nav-logo"><span>//</span> ferfolio</div>
   <div class="nav-links">
-    <a href="inicio">Inicio</a>
+    <a href="#inicio">Inicio</a>
     <a href="#about">Sobre mí</a>
     <a href="#projects">Proyectos</a>
     <a href="#skills">Habilidades</a>
     <a href="#contact">Contacto</a>
   </div>
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
 
 <!-- INICIO -->
@@ -561,85 +645,86 @@
   <div class="inicio-tag">Disponible para proyectos // 2026</div>
   <h1>
     Hola, soy<br>
-    <span class="line2">Fernando <span class="accent">Suyon </span></span>
+    <span class="line2">Fernando <span class="accent">Suyon</span></span>
   </h1>
-  </div>
 </section>
 
 <!-- SOBRE MI -->
 <section id="about">
   <div class="about-left reveal">
     <div class="about-img">
-      <div class="about-img-placeholder"><img src="soldado-comun.jpg" alt="50%"></div>
+      <div class="about-img-placeholder">
+        <img src="soldado-comun.jpg" alt="Fernando Suyon">
+      </div>
     </div>
   </div>
   <div class="about-right reveal">
     <h2>SOBRE<br><span style="color:var(--accent)">MI</span></h2>
     <div class="about-text">
       <p>Soy un desarrollador junior, <strong>me gusta crear juegos y tratar de innovar un poco</strong>. Estoy aprendiendo poco a poco y me gustaria saber mas sobre la programacion.</p>
-      <p>me gusta jugar futbol, ver peliculas de terror,<strong>escuchar musica de cualquier tipo,</strong> pero para mi escuchar musica relajante es lo mejor.</p>
+      <p>me gusta jugar futbol, ver peliculas de terror, <strong>escuchar musica de cualquier tipo,</strong> pero para mi escuchar musica relajante es lo mejor.</p>
     </div>
-    </div>
+  </div>
 </section>
 
 <!-- PROYECTOS -->
-<section id="projects"> <!-- primera tarjeta de proyecto -->
+<section id="projects">
   <h2>PROYE<span style="color:var(--accent)">CTOS</span></h2>
   <div class="projects-grid reveal">
     <div class="project-card">
-      <div class="project-num">01</div>
+      <div class="project-num">01</div> <!-- primera tarjeta de proyecto -->
       <img src="recorte de pirolisis.png" alt="Trabajo de Feria" style="width:100%; height:180px; object-fit:cover; margin-bottom:1.5rem; border:1px solid var(--border);">
       <div class="project-title">Trabajo de Feria</div>
       <p class="project-desc">Un trabajo que lo hice en el colegio y me intereso hacerlo para mostrar más del tema de la Pirólisis.</p>
       <div class="project-stack">
         <span class="stack-tag">JavaScript</span>
         <span class="stack-tag">HTML</span>
-        <span class="stack-tag">css</span>
+        <span class="stack-tag">CSS</span>
       </div>
       <div class="project-links">
         <span class="stack-tag">Terminado</span>
-        <a href="https://feralonso2008.github.io/TRABAJO_FERIA_CIENCIAS/" class="project-link dim">Ver proyecto</a> 
+        <a href="https://feralonso2008.github.io/TRABAJO_FERIA_CIENCIAS/" class="project-link dim" target="_blank" rel="noopener">Ver proyecto</a>
       </div>
     </div>
 
-    <div class="project-card">  <!-- segunda tarjeta de proyecto -->
+    <div class="project-card"> <!-- segunda tarjeta de proyecto -->
       <div class="project-num">02</div>
-      <img src="recorte de creepes.png" alt="Trabajo de Feria" style="width:100%; height:180px; object-fit:cover; margin-bottom:1.5rem; border:1px solid var(--border);">
+      <img src="recorte de creepes.png" alt="Promocion de Creepes" style="width:100%; height:180px; object-fit:cover; margin-bottom:1.5rem; border:1px solid var(--border);">
       <div class="project-title">Promocion de Creepes</div>
       <p class="project-desc">Este proyecto fue en un trabajo en grupo, tuve que borrar los numeros reales y poner falsos por seguridad muchas gracias.</p>
       <div class="project-stack">
         <span class="stack-tag">JavaScript</span>
         <span class="stack-tag">HTML</span>
-        <span class="stack-tag">css</span>
+        <span class="stack-tag">CSS</span>
       </div>
       <div class="project-links">
         <span class="stack-tag">Terminado</span>
-        <a href="https://feralonso2008.github.io/Creepes/" class="project-link dim">Ver proyecto</a>
+        <a href="https://feralonso2008.github.io/Creepes/" class="project-link dim" target="_blank" rel="noopener">Ver proyecto</a>
       </div>
     </div>
 
     <div class="project-card"> <!-- tercera tarjeta de proyecto -->
       <div class="project-num">03</div>
-      <img src="recorte de Juego.png" alt="Trabajo de Feria" style="width:100%; height:180px; object-fit:cover; margin-bottom:1.5rem; border:1px solid var(--border);">
+      <img src="recorte de juego.png" alt="Juego de memorizar" style="width:100%; height:180px; object-fit:cover; margin-bottom:1.5rem; border:1px solid var(--border);">
       <div class="project-title">Juego de memorarizar</div>
       <p class="project-desc">quise probar como se hacen los juegos y ese es el resultado.</p>
       <div class="project-stack">
-        <span class="stack-tag">html</span>
+        <span class="stack-tag">HTML</span>
         <span class="stack-tag">JavaScript</span>
-        <span class="stack-tag">css</span>
+        <span class="stack-tag">CSS</span>
       </div>
       <div class="project-links">
         <span class="stack-tag">Terminado</span>
-        <a href="https://feralonso2008.github.io/juegos/" class="project-link dim">Ver proyecto</a>
+        <a href="https://feralonso2008.github.io/juegos/" class="project-link dim" target="_blank" rel="noopener">Ver proyecto</a>
       </div>
     </div>
+  </div>
 </section>
 
 <!-- HABILIDADES -->
 <section id="skills">
   <h2 class="reveal">HABILI<span style="color:var(--accent)">DADES</span></h2>
   <div class="skills-flat-grid reveal">
-
     <a href="https://developer.mozilla.org/es/docs/Web/HTML" target="_blank" rel="noopener" class="skill-pill">
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML">
       <span>HTML</span>
@@ -675,62 +760,90 @@
 <section id="contact">
   <div class="contact-glow"></div>
   <h2 class="reveal">Cont<span style="color:var(--accent)">acto</span></h2>
-  <p style="color:var(--muted);max-width:480px;margin:0 auto 2.5rem;line-height:1.8;" class="reveal">
-  </p>
+  <p style="color:var(--muted);max-width:480px;margin:0 auto 2.5rem;line-height:1.8;" class="reveal"></p>
   <a href="mailto:fernandosuyon2008@gmail.com" class="contact-email reveal">Correo electronico</a>
   <div class="social-links reveal">
-  <a href="https://github.com/Feralonso2008" target="_blank" rel="noopener">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" style="filter: invert(1); width: 45px; height: 45px;"> <!-- el icono de git hub -->
-  </a>
-</div>
+    <a href="https://github.com/Feralonso2008" target="_blank" rel="noopener">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" style="filter: invert(1); width: 45px; height: 45px;">
+    </a>
+  </div>
 </section>
 
-<script> //Esto es JS
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
-  });
-  function animateRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animateRing);
+<script>
+  // ── Custom cursor (solo desktop) ──
+  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+
+  if (!isTouchDevice) {
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    let rafRunning = false;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+      if (!rafRunning) {
+        rafRunning = true;
+        requestAnimationFrame(animateRing);
+      }
+    });
+
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      const dist = Math.abs(mx - rx) + Math.abs(my - ry);
+      if (dist > 0.5) {
+        requestAnimationFrame(animateRing);
+      } else {
+        rafRunning = false;
+      }
+    }
   }
-  animateRing();
 
-  // Navbar scroll
+  // ── Navbar scroll ──
   const navbar = document.getElementById('navbar');
+  let ticking = false;
   window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+        ticking = false;
+      });
+      ticking = true;
+    }
   });
 
-  // Reveal on scroll
+  // ── Hamburger menu ──
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    // Evitar scroll del body cuando el menu esta abierto
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── Reveal on scroll ──
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver(entries => {
     entries.forEach((e, i) => {
       if (e.isIntersecting) {
         setTimeout(() => e.target.classList.add('visible'), i * 100);
+        observer.unobserve(e.target); // dejar de observar una vez visible (más eficiente)
       }
     });
   }, { threshold: 0.1 });
   reveals.forEach(el => observer.observe(el));
-
-  // Animacion de barras de habilidades al hacer scroll
-  const skillObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('bar-animated');
-      }
-    });
-  }, { threshold: 0.3 });
-  document.querySelectorAll('.skill-category').forEach(el => skillObserver.observe(el));
 </script>
 </body>
-
 </html>
