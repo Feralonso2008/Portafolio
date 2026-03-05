@@ -183,13 +183,12 @@
   .mobile-menu a:hover,
   .mobile-menu a:active { color: var(--accent); }
 
-  /* Móvil: nav siempre visible, links más pequeños */
+  /* ── MÓVIL: activar hamburguesa y ocultar nav-links ── */
   @media (max-width: 768px) {
     nav { padding: 1rem 1.2rem; }
-    .nav-links { gap: 1rem; }
-    .nav-links a { font-size: 0.6rem; letter-spacing: 1px; }
-    .hamburger { display: none; }
-    .mobile-menu { display: none !important; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .mobile-menu { display: flex; }
   }
 
   /* ── INICIO ── */
@@ -247,6 +246,30 @@
     color: transparent;
   }
   h1 .accent { color: var(--accent); }
+
+  /* ── MÓVIL: ajustes de texto en inicio ── */
+  @media (max-width: 768px) {
+    #inicio { padding: 0 1.5rem; }
+
+    h1 {
+      font-size: clamp(2.8rem, 13vw, 5rem);
+      letter-spacing: -1px;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .inicio-tag { font-size: 0.6rem; letter-spacing: 2px; }
+
+    .inicio-stats {
+      position: static;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .scroll-hint { left: 1.5rem; }
+  }
 
   .inicio-desc {
     max-width: 480px;
@@ -339,6 +362,11 @@
   /* ── SECTIONS ── */
   section { padding: 8rem 4rem; }
 
+  /* ── MÓVIL: menos padding en secciones ── */
+  @media (max-width: 768px) {
+    section { padding: 5rem 1.5rem; }
+  }
+
   .section-label {
     font-family: var(--mono);
     font-size: 0.65rem;
@@ -369,6 +397,16 @@
     gap: 6rem;
     align-items: center;
   }
+
+  /* ── MÓVIL: about en una sola columna ── */
+  @media (max-width: 768px) {
+    #about {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+    .about-img { max-width: 100%; }
+  }
+
   .about-img {
     position: relative;
     aspect-ratio: 1;
@@ -441,6 +479,12 @@
     gap: 1.5px;
     border: 1px solid var(--border);
   }
+
+  /* ── MÓVIL: proyectos en una columna ── */
+  @media (max-width: 768px) {
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+
   .project-card {
     background: var(--surface);
     padding: 2.5rem;
@@ -604,8 +648,6 @@
     opacity: 1;
     transform: none;
   }
-
-  /* Sin cambios de layout en móvil - mismo diseño en todos los dispositivos */
 </style>
 </head>
 <body>
