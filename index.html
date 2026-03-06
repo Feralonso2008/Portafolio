@@ -359,12 +359,13 @@
   /* ── MÓVIL: about en una sola columna ── */
   @media (max-width: 768px) {
     #about { grid-template-columns: 1fr; gap: 3rem; }
-    .about-img { max-width: 100%; }
+    .about-img { max-width: 100%; aspect-ratio: auto; }
+    .about-img-placeholder { height: auto; }
   }
 
   .about-img {
     position: relative;
-    aspect-ratio: 1;
+    aspect-ratio: auto;
     max-width: 400px;
   }
   .about-img-placeholder {
@@ -376,7 +377,7 @@
     position: relative;
     overflow: hidden;
   }
-  .about-img-placeholder img { width: 100%; height: 100%; object-fit: cover; }
+  .about-img-placeholder img { width: 100%; height: 100%; object-fit: contain; }
   .about-img-placeholder::after {
     content: '';
     position: absolute; inset: 0;
@@ -604,7 +605,7 @@
   <div class="about-left reveal">
     <div class="about-img">
       <div class="about-img-placeholder">
-        <img src="soldado-comun.jpg" alt="Fernando Suyon">
+        <img src="Fernando.jpeg" alt="Fernando Suyon">
       </div>
     </div>
   </div>
@@ -750,7 +751,6 @@ function deleteLine(el, cb) {
 
 function runLines(index) {
   if (index >= lines.length) {
-    // Borrar todas las lineas y reiniciar
     const allLines = [...terminalBody.children];
     let i = allLines.length - 1;
     function deleteNext() {
@@ -813,7 +813,6 @@ window.addEventListener('load', () => setTimeout(() => runLines(0), 800));
   hamburger.addEventListener('click', () => {
     const isOpen = mobileMenu.classList.toggle('open');
     hamburger.classList.toggle('open', isOpen);
-    // Evitar scroll del body cuando el menu esta abierto
     document.body.style.overflow = isOpen ? 'hidden' : '';
   });
 
@@ -829,7 +828,7 @@ window.addEventListener('load', () => setTimeout(() => runLines(0), 800));
     entries.forEach((e, i) => {
       if (e.isIntersecting) {
         setTimeout(() => e.target.classList.add('visible'), i * 100);
-        observer.unobserve(e.target); // dejar de observar una vez visible (más eficiente)
+        observer.unobserve(e.target);
       }
     });
   }, { threshold: 0.1 });
