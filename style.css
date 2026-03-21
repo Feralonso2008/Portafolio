@@ -473,9 +473,13 @@
   .project-link.dim { color: var(--muted); }
 
   /* ── HERRAMIENTAS Y LENGUAJES(PERO NO CAMBIARE NADA POR QUE EN SI SON HABILIDADES) ── */
-  #skills { background: var(--bg); }
-  .skills-flat-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+#skills { background: var(--bg); }
 
+@media (max-width: 768px) {
+  #skills { padding-top: 1rem; }
+}
+
+  .skills-flat-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
   /* ── SKILL PILLS: móvil base, PC más grandes ── */
   .skill-pill {
     display: flex; align-items: center; gap: 0.6rem;
