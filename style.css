@@ -1,4 +1,4 @@
-  :root {
+:root {
     --bg: #080c10;  /* fondo */
     --bg2: #0d1117;  /* fondo */
     --surface: #111827; /* color de superficie de las tarjetas */
@@ -294,8 +294,18 @@
     color: transparent;
   }
   h1 .accent { color: var(--accent); }
-  
-  h2 { font-size: 1.8rem; }
+
+  /* ── H2: móvil base, PC más grande ── */
+  h2 {
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4rem;
+    font-size: 1.8rem; /* móvil */
+  }
+  @media (min-width: 768px) {
+    h2 { font-size: 3.5rem; letter-spacing: -2px; } /* PC */
+  }
 
   /* ── MÓVIL: ajustes de texto en inicio ── */
   @media (max-width: 768px) {
@@ -333,10 +343,6 @@
   @media (max-width: 768px) {
     section { padding: 5rem 1.5rem; }
   }
-
- @media (min-width: 768px) {
-  h2 { font-size: 3.5rem; }
-}
 
   /* ── ABOUT ── */
   #about {
@@ -465,6 +471,8 @@
   /* ── HERRAMIENTAS Y LENGUAJES(PERO NO CAMBIARE NADA POR QUE EN SI SON HABILIDADES) ── */
   #skills { background: var(--bg); }
   .skills-flat-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  /* ── SKILL PILLS: móvil base, PC más grandes ── */
   .skill-pill {
     display: flex; align-items: center; gap: 0.6rem;
     padding: 0.55rem 1rem;
@@ -476,6 +484,10 @@
     transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
   }
   .skill-pill img { width: 18px; height: 18px; object-fit: contain; }
+  @media (min-width: 768px) {
+    .skill-pill { padding: 0.85rem 1.5rem; font-size: 0.9rem; }
+    .skill-pill img { width: 26px; height: 26px; }
+  }
   .skill-pill:hover {
     background: rgba(0,255,200,0.07);
     border-color: var(--accent); color: var(--accent);
