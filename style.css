@@ -345,8 +345,8 @@
 
   /* ── MÓVIL: menos padding en secciones ── */
 @media (max-width: 768px) {
-  section { padding: 3rem 1.5rem; }
-  h2 { margin-bottom: 2rem; }
+  section { padding: 2rem 1.5rem; }
+  h2 { margin-bottom: 1rem; }
 }
   /* ── ABOUT ── */
   #about {
