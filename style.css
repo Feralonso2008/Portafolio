@@ -245,9 +245,13 @@
     justify-content: center;
     padding: 5rem 1.5rem 3rem;
     gap: 2rem;
-    min-height: auto; /* ← esto elimina el espacio vacío */
+    min-height: auto; /* elimina el 100vh */
   }
-  .terminal { flex: none; width: 100%; }
+  .terminal { 
+    flex: none; 
+    width: 100%;
+    min-height: auto; /* ← esto elimina el espacio vacío dentro de la terminal */
+  }
 }
   .inicio-grid {
     position: absolute; inset: 0;
@@ -340,10 +344,10 @@
   section { padding: 8rem 4rem; }
 
   /* ── MÓVIL: menos padding en secciones ── */
-  @media (max-width: 768px) {
-    section { padding: 5rem 1.5rem; }
-  }
-
+@media (max-width: 768px) {
+  section { padding: 3rem 1.5rem; }
+  h2 { margin-bottom: 2rem; }
+}
   /* ── ABOUT ── */
   #about {
     display: grid;
