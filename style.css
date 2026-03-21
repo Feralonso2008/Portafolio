@@ -239,16 +239,16 @@
   }
 
   /* ── MÓVIL: terminal debajo del texto ── */
-  @media (max-width: 768px) {
-    #inicio {
-      flex-direction: column;
-      justify-content: center;
-      padding: 5rem 1.5rem 3rem;
-      gap: 2rem;
-    }
-    .terminal { flex: none; width: 100%; }
+ @media (max-width: 768px) {
+  #inicio {
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem 1.5rem 3rem;
+    gap: 2rem;
+    min-height: auto; /* ← esto elimina el espacio vacío */
   }
-
+  .terminal { flex: none; width: 100%; }
+}
   .inicio-grid {
     position: absolute; inset: 0;
     background-image:
